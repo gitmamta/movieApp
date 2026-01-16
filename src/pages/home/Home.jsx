@@ -15,7 +15,7 @@ export default function Home() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("https://movie-backend-8f8u.onrender.com") // Replace with your backend URL
+    fetch("https://movie-backend-8f8u.onrender.com/movies") // Replace with your backend URL
       .then((res) => res.json())
       .then((data) => {
         // Filter if search query exists
