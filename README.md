@@ -1,16 +1,50 @@
-# React + Vite
+IMDb Top Movies App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack movie application to view, search, add, edit, and delete movies. Built with React (frontend) and Node.js + Express + MongoDB (backend), deployed on Netlify and Render.
 
-Currently, two official plugins are available:
+Features
+Frontend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Home Page: Displays the latest movies with posters, titles, year, and IMDb ratings.
 
-## React Compiler
+Search Functionality: Search movies by title from both desktop and mobile views.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Admin Panel:
 
-## Expanding the ESLint configuration
+Add new movies
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Edit existing movies
+
+Delete movies
+
+Responsive Navbar: Works on desktop and mobile.
+
+Movie Details: View movie info including crew and IMDb ratings.
+
+Backend
+
+API Endpoints:
+
+GET /movies – Fetch all movies
+
+GET /movies/sorted?by=<field> – Fetch sorted movies (name, rating, releaseDate, rank)
+
+GET /movies/search?query=<term> – Search movies by title or crew
+
+POST /movies – Add a new movie
+
+PUT /movies/:id – Update a movie
+
+DELETE /movies/:id – Delete a movie
+
+MongoDB Integration: Stores movie data.
+
+CORS Enabled: Allows frontend (Netlify) to communicate with backend (Render).
+
+Tech Stack
+
+Frontend: React, Material UI (MUI), React Router DOM
+
+Backend: Node.js, Express.js, MongoDB, Mongoose
+
+Deployment: Netlify (frontend), Render (backend)
