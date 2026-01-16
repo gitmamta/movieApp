@@ -36,7 +36,7 @@ export default function Admin() {
   // Fetch movies from backend
   const fetchMovies = () => {
     setLoading(true);
-    fetch("http://localhost:5000/movies")
+    fetch("https://movie-backend-8f8u.onrender.com/")
       .then((res) => res.json())
       .then((data) => {
         setMovies(data);
@@ -99,8 +99,8 @@ export default function Admin() {
 
   const method = isEdit ? "PUT" : "POST";
   const url = isEdit
-    ? `http://localhost:5000/movies/${currentMovie._id}`
-    : "http://localhost:5000/movies";
+    ? `https://movie-backend-8f8u.onrender.com/${currentMovie._id}`
+    : "https://movie-backend-8f8u.onrender.com/";
 
   // Convert numeric fields and remove _id if adding
   const payload = {
@@ -135,7 +135,7 @@ if (isEdit) payload._id = currentMovie._id;
   // Delete movie
   const handleDelete = (_id) => {
     if (!window.confirm("Are you sure you want to delete this movie?")) return;
-    fetch(`http://localhost:5000/movies/${_id}`, { method: "DELETE" })
+    fetch(`https://movie-backend-8f8u.onrender.com/${_id}`, { method: "DELETE" })
       .then(() => fetchMovies())
       .catch((err) => console.error(err));
   };
