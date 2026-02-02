@@ -17,7 +17,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // 🔑 prevent page refresh
+    e.preventDefault();
     setError("");
 
     if (!username || !password) {
@@ -26,16 +26,25 @@ export default function Login() {
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/admin/login", {
+      const res = await axios.post("http://localhost:5000/auth/login", {
         username,
         password,
       });
 
-      // Save token
-      localStorage.setItem("adminToken", res.data.token);
+      // Save token and role
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.user?.role);
 
-      // Redirect
-      navigate("/admin");
+      // Redirect based on role
+      if (res.data.role=== "admin") {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", res.data.role);
+        navigate("/admin");
+      } else {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", res.data.role);
+        navigate("/"); // normal user
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
       console.error(err);
@@ -53,7 +62,7 @@ export default function Login() {
         }}
       >
         <Typography component="h1" variant="h5">
-          Admin Login
+          Login
         </Typography>
 
         {error && (
@@ -62,7 +71,6 @@ export default function Login() {
           </Alert>
         )}
 
-        {/* FORM */}
         <Box
           component="form"
           onSubmit={handleLogin}
@@ -85,12 +93,7 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 2 }}
-          >
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
             Login
           </Button>
         </Box>

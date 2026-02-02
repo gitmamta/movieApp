@@ -13,6 +13,7 @@ import Home from "./pages/home/Home.jsx";
 import Search from "./pages/search/Search.jsx";
 import Login from "./pages/auth/login/Login.jsx";
 import Register from "./pages/auth/register/Register.jsx";
+import AdminRoute from "./components/navbar/adminroute/AdminRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -20,31 +21,40 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "Home",
+        index:true,
         element: <Home />,
+      },
+      {
+        path:"home",
+        element:<Home/>
       },
 
       {
-        path: "admin",
-        element: <Admin />,
-      },
-      {
         path: "search",
-        element: <Search/>,
+        element: <Search />,
       },
       {
         path: "login",
-        element: <Login/>,
+        element: <Login />,
       },
-{
+      {
         path: "register",
-        element: <Register/>,
+        element: <Register />,
       },
-
+      {
+        element: <AdminRoute />,
+        children: [
+          {
+            path: "admin",
+            element: <Admin />,
+          },
+          
+        ],
+      },
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />
+  <RouterProvider router={router} />,
 );

@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -9,6 +7,10 @@ import {
   TextField,
   Button,
   Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import axios from "axios";
 
@@ -16,12 +18,13 @@ export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("USER"); // default role is USER
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
-    e.preventDefault(); // 🔑 important for form submit
+    e.preventDefault(); // prevent default form submit
     setError("");
     setSuccess("");
 
@@ -36,10 +39,10 @@ export default function Register() {
     }
 
     try {
-      await axios.post("http://localhost:5000/admin/register", {
+      await axios.post("http://localhost:5000/auth/register", {
         username,
         password,
-        role: "ADMIN",
+        role, // send selected role
       });
 
       setSuccess("Registered successfully! Redirecting to login…");
@@ -61,7 +64,7 @@ export default function Register() {
         }}
       >
         <Typography component="h1" variant="h5">
-          Register Admin
+          Register
         </Typography>
 
         {error && (
@@ -75,8 +78,11 @@ export default function Register() {
           </Alert>
         )}
 
-        {/* FORM */}
-        <Box component="form" onSubmit={handleRegister} sx={{ width: "100%", mt: 1 }}>
+        <Box
+          component="form"
+          onSubmit={handleRegister}
+          sx={{ width: "100%", mt: 1 }}
+        >
           <TextField
             margin="normal"
             fullWidth
@@ -103,12 +109,20 @@ export default function Register() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 2 }}
-          >
+          {/* Role Selection */}
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Role</InputLabel>
+            <Select
+              value={role}
+              label="Role"
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <MenuItem value="USER">User</MenuItem>
+              <MenuItem value="ADMIN">Admin</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
             Register
           </Button>
 
