@@ -9,6 +9,7 @@ import {
   Alert,
 } from "@mui/material";
 import axios from "axios";
+const BACKEND_URL = "https://movie-backend-8f8u.onrender.com";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -26,7 +27,7 @@ export default function Login() {
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/auth/login", {
+      const res = await axios.post(`${BACKEND_URL}/auth/login`, {
         username,
         password,
       });

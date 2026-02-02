@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
+const BACKEND_URL = "https://movie-backend-8f8u.onrender.com";
+
 export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -39,7 +41,7 @@ export default function Register() {
     }
 
     try {
-      await axios.post("http://localhost:5000/auth/register", {
+      await axios.post(`${BACKEND_URL}/auth/register}`, {
         username,
         password,
         role, // send selected role
