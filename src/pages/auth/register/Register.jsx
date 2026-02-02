@@ -41,7 +41,7 @@ export default function Register() {
     }
 
     try {
-      await axios.post(`${BACKEND_URL}/auth/register}`, {
+      await axios.post(`${BACKEND_URL}/auth/register`, {
         username,
         password,
         role, // send selected role
