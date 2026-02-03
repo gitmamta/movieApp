@@ -32,19 +32,16 @@ export default function Login() {
         password,
       });
 
-      // Save token and role
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.user?.role);
+      const token = res.data.token;
+      const role = res.data.user.role; // 👈 THIS is the key
 
-      // Redirect based on role
-      if (res.data.role=== "admin") {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("role", res.data.role);
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+
+      if (role === "ADMIN") {
         navigate("/admin");
       } else {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("role", res.data.role);
-        navigate("/"); // normal user
+        navigate("/");
       }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
