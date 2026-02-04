@@ -12,9 +12,9 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import axios from "axios";
+import api from "../../../api/api";
 
-const BACKEND_URL = "https://movie-backend-8f8u.onrender.com";
+// const BACKEND_URL = "https://movie-backend-8f8u.onrender.com";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -41,7 +41,7 @@ export default function Register() {
     }
 
     try {
-      await axios.post(`${BACKEND_URL}/auth/register`, {
+      await api.post("/auth/register", {
         username,
         password,
         role, // send selected role

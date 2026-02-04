@@ -8,10 +8,12 @@ import {
   Button,
   Alert,
 } from "@mui/material";
-import axios from "axios";
-const BACKEND_URL = "https://movie-backend-8f8u.onrender.com";
+import api from "../../../api/api";
+console.log("Backend URL:", api.defaults.baseURL);
+// const BACKEND_URL = "https://movie-backend-8f8u.onrender.com";
 
 export default function Login() {
+  
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -27,7 +29,7 @@ export default function Login() {
     }
 
     try {
-      const res = await axios.post(`${BACKEND_URL}/auth/login`, {
+      const res = await api.post("/auth/login", {
         username,
         password,
       });

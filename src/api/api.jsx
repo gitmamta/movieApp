@@ -9,9 +9,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://your-backend.onrender.com/",
+  baseURL: import.meta.env.VITE_BACKEND_API,
 });
-
 // Attach token before every request
 api.interceptors.request.use(
   (config) => {
