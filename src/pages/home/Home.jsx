@@ -23,24 +23,26 @@ export default function Home() {
   const searchQuery = searchParams.get("search") || "";
 
   useEffect(() => {
-  setLoading(true);
+    setLoading(true);
 
-  const url = searchQuery
-    ? `/movies/search?query=${encodeURIComponent(searchQuery)}`
-    : "/movies";
+    const API_BASE = import.meta.env.VITE_BACKEND_API;
 
-  api.get(url)
-    .then((res) => {
-      setMovies(res.data);
-      setLoading(false);
-    })
-    .catch((err) => {
-      console.error("Error fetching movies:", err);
-      setMovies([]);
-      setLoading(false);
-    });
-}, [searchQuery]);
+    const url = searchQuery
+      ? `${API_BASE}/movies/search?query=${encodeURIComponent(searchQuery)}`
+      : `${API_BASE}/movies`;
 
+    api
+      .get(url)
+      .then((res) => {
+        setMovies(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching movies:", err);
+        setMovies([]);
+        setLoading(false);
+      });
+  }, [searchQuery]);
 
   if (loading) {
     return (
