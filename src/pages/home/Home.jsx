@@ -11,34 +11,38 @@ import {
   Rating,
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
-import api from "../../api/api";
+import axios from "axios"; // Use axios directly
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const location = useLocation();
 
   // Get search query from URL
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get("search") || "";
 
+  // Hardcoded backend URL
+  const API_BASE = "https://movie-backend-8f8u.onrender.com"; // no trailing slash
+
   useEffect(() => {
     setLoading(true);
-
-    const API_BASE = import.meta.env.VITE_BACKEND_API;
+    setError("");
 
     const url = searchQuery
       ? `${API_BASE}/movies/search?query=${encodeURIComponent(searchQuery)}`
       : `${API_BASE}/movies`;
 
-    api
+    axios
       .get(url)
       .then((res) => {
-        setMovies(res.data);
+        setMovies(res.data || []);
         setLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching movies:", err);
+        setError("Failed to fetch movies. Please try again later.");
         setMovies([]);
         setLoading(false);
       });
@@ -49,6 +53,18 @@ export default function Home() {
       <div style={{ display: "flex", justifyContent: "center", marginTop: 50 }}>
         <CircularProgress />
       </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Typography
+        variant="h6"
+        color="error"
+        style={{ textAlign: "center", marginTop: 50 }}
+      >
+        {error}
+      </Typography>
     );
   }
 
@@ -67,7 +83,7 @@ export default function Home() {
               <CardMedia
                 component="img"
                 height="300"
-                image={movie.image || "/placeholder.jpg"} // fallback if missing
+                image={movie.image || "/placeholder.jpg"}
                 alt={movie.title}
               />
 
@@ -85,7 +101,7 @@ export default function Home() {
                 </Typography>
 
                 <Rating
-                  value={Number(movie.imDbRating || 0) / 2} // IMDb out of 10 → stars out of 5
+                  value={Number(movie.imDbRating || 0) / 2}
                   precision={0.5}
                   readOnly
                   size="small"
