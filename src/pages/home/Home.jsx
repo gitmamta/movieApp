@@ -23,29 +23,24 @@ export default function Home() {
   const searchQuery = searchParams.get("search") || "";
 
   useEffect(() => {
-    setLoading(true);
+  setLoading(true);
 
-    api
-      .get("/movies")
-      .then((res) => {
-        let data = res.data;
+  const url = searchQuery
+    ? `/movies/search?query=${encodeURIComponent(searchQuery)}`
+    : "/movies";
 
-        // Filter if search query exists
-        if (searchQuery) {
-          data = data.filter((movie) =>
-            movie.title.toLowerCase().includes(searchQuery.toLowerCase())
-          );
-        }
+  api.get(url)
+    .then((res) => {
+      setMovies(res.data);
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error("Error fetching movies:", err);
+      setMovies([]);
+      setLoading(false);
+    });
+}, [searchQuery]);
 
-        setMovies(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching movies:", err);
-        setMovies([]);
-        setLoading(false);
-      });
-  }, [searchQuery]);
 
   if (loading) {
     return (
