@@ -104,7 +104,9 @@ export default function Admin() {
       year: currentMovie.year ? Number(currentMovie.year) : null,
       image: currentMovie.image,
       crew: currentMovie.crew,
-      imDbRating: currentMovie.imDbRating ? Number(currentMovie.imDbRating) : null,
+      imDbRating: currentMovie.imDbRating
+        ? Number(currentMovie.imDbRating)
+        : null,
       imDbRatingCount: currentMovie.imDbRatingCount
         ? Number(currentMovie.imDbRatingCount)
         : null,
@@ -151,7 +153,11 @@ export default function Admin() {
         Admin Panel
       </Typography>
 
-      <Button variant="contained" color="primary" onClick={() => handleOpenDialog()}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => handleOpenDialog()}
+      >
         Add New Movie
       </Button>
 
@@ -162,7 +168,8 @@ export default function Admin() {
               <CardContent>
                 <Typography variant="h6">{movie.title}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Rank: {movie.rank} | Year: {movie.year} | Rating: {movie.imDbRating}
+                  Rank: {movie.rank} | Year: {movie.year} | Rating:{" "}
+                  {movie.imDbRating}
                 </Typography>
                 {movie.crew && (
                   <Typography variant="body2" color="text.secondary">
@@ -171,10 +178,18 @@ export default function Admin() {
                 )}
               </CardContent>
               <CardActions>
-                <Button size="small" color="primary" onClick={() => handleOpenDialog(movie)}>
+                <Button
+                  size="small"
+                  color="primary"
+                  onClick={() => handleOpenDialog(movie)}
+                >
                   Edit
                 </Button>
-                <Button size="small" color="secondary" onClick={() => handleDelete(movie._id)}>
+                <Button
+                  size="small"
+                  color="secondary"
+                  onClick={() => handleDelete(movie._id)}
+                >
                   Delete
                 </Button>
               </CardActions>
