@@ -10,6 +10,7 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
+import axios from "axios";
 
 export default function Search() {
   const location = useLocation();
@@ -18,15 +19,22 @@ export default function Search() {
 
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const API_BASE = "https://movie-backend-8f8u.onrender.com";
 
   const fetchMovies = async () => {
     setLoading(true);
+    setError("");
     try {
-      const res = await fetch(`http://localhost:5000/movies/search?query=${q}`);
-      const data = await res.json();
-      setMovies(data);
+      const res = await axios.get(`${API_BASE}/movies/search`, {
+        params: { query: q },
+      });
+      setMovies(res.data || []);
     } catch (err) {
       console.error(err);
+      setError("Failed to fetch movies. Please try again later.");
+      setMovies([]);
     } finally {
       setLoading(false);
     }
@@ -42,6 +50,14 @@ export default function Search() {
       <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
         <CircularProgress />
       </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Typography variant="h6" color="error" sx={{ textAlign: "center", mt: 5 }}>
+        {error}
+      </Typography>
     );
   }
 
@@ -61,8 +77,7 @@ export default function Search() {
                 <CardContent>
                   <Typography variant="h6">{movie.title}</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Rank: {movie.rank} | Year: {movie.year} | Rating:{" "}
-                    {movie.imDbRating}
+                    Rank: {movie.rank} | Year: {movie.year} | Rating: {movie.imDbRating}
                   </Typography>
                   {movie.crew && (
                     <Typography variant="body2" color="text.secondary">
@@ -74,7 +89,7 @@ export default function Search() {
                   <Button
                     size="small"
                     color="primary"
-                    href={`/movie?id=${movie._id}`} // navigate to movie page
+                    href={`/movie?id=${movie._id}`}
                   >
                     View
                   </Button>
