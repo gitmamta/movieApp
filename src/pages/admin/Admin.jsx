@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Typography,
-  Grid,
   Card,
   CardContent,
   CardActions,
@@ -38,7 +37,7 @@ export default function Admin() {
   const fetchMovies = async () => {
     try {
       setLoading(true);
-      const res = await api.get("/movies"); // uses api.js
+      const res = await api.get("/movies");
       setMovies(res.data);
     } catch (err) {
       console.error("Error fetching movies:", err);
@@ -85,12 +84,10 @@ export default function Admin() {
 
   const handleCloseDialog = () => setOpenDialog(false);
 
-  // Handle input changes
   const handleChange = (e) => {
     setCurrentMovie({ ...currentMovie, [e.target.name]: e.target.value });
   };
 
-  // Add or edit movie
   const handleSave = async () => {
     if (!currentMovie.rank || !currentMovie.title) {
       alert("Rank and Title are required");
@@ -114,9 +111,9 @@ export default function Admin() {
 
     try {
       if (isEdit) {
-        await api.put(`/movies/${currentMovie._id}`, payload);
+        await api.put(`/admin/movies/${currentMovie._id}`, payload);
       } else {
-        await api.post("/movies", payload);
+        await api.post("/admin/movies", payload);
       }
       fetchMovies();
       handleCloseDialog();
@@ -126,12 +123,11 @@ export default function Admin() {
     }
   };
 
-  // Delete movie
   const handleDelete = async (_id) => {
     if (!window.confirm("Are you sure you want to delete this movie?")) return;
 
     try {
-      await api.delete(`/movies/${_id}`);
+      await api.delete(`/admin/movies/${_id}`);
       fetchMovies();
     } catch (err) {
       console.error("Error deleting movie:", err);
@@ -141,147 +137,179 @@ export default function Admin() {
 
   if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 6 }}>
         <CircularProgress />
       </Box>
     );
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      <Typography variant="h4" gutterBottom>
+    <Box sx={{ p: 3, backgroundColor: "#000", minHeight: "100vh" }}>
+      <Typography variant="h4" gutterBottom color="white" textAlign="center">
         Admin Panel
       </Typography>
 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => handleOpenDialog()}
-      >
-        Add New Movie
-      </Button>
+      <Box sx={{ textAlign: "center", mb: 3 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleOpenDialog()}
+          sx={{ color: "white" }}
+        >
+          Add New Movie
+        </Button>
+      </Box>
 
-      <Grid container spacing={3} sx={{ mt: 2 }}>
+      {/* Flex container for cards */}
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 3,
+          justifyContent: "center",
+        }}
+      >
         {movies.map((movie) => (
-          <Grid item xs={12} sm={6} md={3} key={movie._id}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">{movie.title}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Rank: {movie.rank} | Year: {movie.year} | Rating:{" "}
-                  {movie.imDbRating}
+          <Box
+            key={movie._id}
+            sx={{
+              flex: { xs: "1 1 100%", sm: "1 1 48%", md: "1 1 23%" },
+              maxWidth: { xs: "100%", sm: "48%", md: "23%" },
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Card
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+                backgroundColor: "#1c1c1c",
+                color: "white",
+                transition: "transform 0.2s",
+                "&:hover": { transform: "scale(1.03)" },
+              }}
+            >
+              {/* Image */}
+              {movie.image && (
+                <Box
+                  sx={{
+                    width: "100%",
+                    height: 200,
+                    overflow: "hidden",
+                    borderBottom: "2px solid #333",
+                  }}
+                >
+                  <img
+                    src={movie.image}
+                    alt={movie.title}
+                    onError={(e) => (e.target.src = "/placeholder.jpg")}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                </Box>
+              )}
+
+              <CardContent sx={{ flexGrow: 1, textAlign: "center", py: 1 }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {movie.title}
                 </Typography>
+
+                <Typography variant="body2" color="#ccc">
+                  Rank: {movie.rank} | Year: {movie.year} | Rating:{" "}
+                  {movie.imDbRating || "N/A"}
+                </Typography>
+
                 {movie.crew && (
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" color="#aaa">
                     Crew: {movie.crew}
                   </Typography>
                 )}
               </CardContent>
-              <CardActions>
+
+              <CardActions sx={{ justifyContent: "center" }}>
                 <Button
                   size="small"
-                  color="primary"
                   onClick={() => handleOpenDialog(movie)}
+                  sx={{ color: "white" }}
                 >
                   Edit
                 </Button>
                 <Button
                   size="small"
-                  color="secondary"
                   onClick={() => handleDelete(movie._id)}
+                  sx={{ color: "#ffb400" }}
                 >
                   Delete
                 </Button>
               </CardActions>
             </Card>
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
 
       {/* Add/Edit Dialog */}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        PaperProps={{ sx: { backgroundColor: "#1c1c1c", color: "white" } }}
+      >
         <DialogTitle>{isEdit ? "Edit Movie" : "Add Movie"}</DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            name="rank"
-            label="Rank *"
-            type="number"
-            fullWidth
-            value={currentMovie.rank}
-            onChange={handleChange}
-            required
-          />
-          <TextField
-            margin="dense"
-            name="title"
-            label="Title *"
-            fullWidth
-            value={currentMovie.title}
-            onChange={handleChange}
-            required
-          />
-          <TextField
-            margin="dense"
-            name="fullTitle"
-            label="Full Title"
-            fullWidth
-            value={currentMovie.fullTitle}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="year"
-            label="Year"
-            type="number"
-            fullWidth
-            value={currentMovie.year}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="image"
-            label="Poster URL"
-            fullWidth
-            value={currentMovie.image}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="crew"
-            label="Crew"
-            fullWidth
-            value={currentMovie.crew}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="imDbRating"
-            label="IMDb Rating"
-            type="number"
-            fullWidth
-            inputProps={{ step: 0.1 }}
-            value={currentMovie.imDbRating}
-            onChange={handleChange}
-          />
-          <TextField
-            margin="dense"
-            name="imDbRatingCount"
-            label="IMDb Rating Count"
-            type="number"
-            fullWidth
-            value={currentMovie.imDbRatingCount}
-            onChange={handleChange}
-          />
+          {[
+            { name: "rank", label: "Rank *", type: "number" },
+            { name: "title", label: "Title *", type: "text" },
+            { name: "fullTitle", label: "Full Title", type: "text" },
+            { name: "year", label: "Year", type: "number" },
+            { name: "image", label: "Poster URL", type: "text" },
+            { name: "crew", label: "Crew", type: "text" },
+            {
+              name: "imDbRating",
+              label: "IMDb Rating",
+              type: "number",
+              step: 0.1,
+            },
+            {
+              name: "imDbRatingCount",
+              label: "IMDb Rating Count",
+              type: "number",
+            },
+          ].map((field) => (
+            <TextField
+              key={field.name}
+              margin="dense"
+              name={field.name}
+              label={field.label}
+              type={field.type}
+              fullWidth
+              value={currentMovie[field.name]}
+              onChange={handleChange}
+              InputLabelProps={{ style: { color: "#ccc" } }}
+              InputProps={{ style: { color: "white" } }}
+              inputProps={field.step ? { step: field.step } : {}}
+            />
+          ))}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleSave} color="primary">
+          <Button onClick={handleCloseDialog} sx={{ color: "white" }}>
+            Cancel
+          </Button>
+          <Button onClick={handleSave} sx={{ color: "#ffb400" }}>
             {isEdit ? "Update" : "Add"}
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 }
